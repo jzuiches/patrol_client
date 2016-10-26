@@ -36,7 +36,7 @@ class Dashboard extends Component{
       <View style={globals.flexContainer}>
         <NavigationBar
           title={titleConfig}
-          tintColor={Colors.brandPrimary}
+          tintColor={Colors.patrolBlue}
           leftButton={<BackButton handlePress={this.goBack}/>}
         />
         <View style={globals.flexCenter}>

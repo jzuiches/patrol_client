@@ -1,5 +1,5 @@
 export default Colors = {
-  patrolGrey: '#3A7BD2',
+  patrolBlue: '#3A7BD2',
   brandPrimaryDark: '#215191',
   inactive: '#EBEEF5',
   highlight: '#FFFF8D',
