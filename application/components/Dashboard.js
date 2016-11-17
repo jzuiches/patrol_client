@@ -1,57 +1,57 @@
 import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity
-} from 'react-native';
+import { TabBarIOS } from 'react-native';
+import { TabBarItemIOS } from 'react-native-vector-icons/Ionicons';
 
-import Icon from 'react-native-vector-icons/Ionicons';
-import NavigationBar from 'react-native-navbar';
-import Colors from '../styles/colors';
-import { globals } from '../styles';
 
-const BackButton = ({ handlePress }) => (
-  <TouchableOpacity onPress={handlePress} style={globals.pa1}>
-    <Icon name='ios-arrow-back' size={25} color='white' />
-  </TouchableOpacity>
-);
+import ProfileView from './profile/ProfileView';
+import TrainingNav from './training/TrainingNav';
+import TrainingView from './training/TrainingView';
 
 class Dashboard extends Component{
   constructor(){
     super();
-    this.goBack = this.goBack.bind(this);
-    this.visitLanding = this.visitLanding.bind(this);
+    this.state = {
+      selectedTab: 'TrainingInput'
+    };
   }
-  visitLanding(){
-    this.props.navigator.push({
-      name: 'Landing'
-    });
-  }
-  goBack(){
-    this.props.navigator.pop();
-  }
+
   render(){
-    let titleConfig = {title: 'Dashboard', tintColor: 'white'};
+     console.log("P", this.props);
     return (
-      <View style={globals.flexContainer}>
-        <NavigationBar
-          title={titleConfig}
-          tintColor={Colors.patrolBlue}
-          leftButton={<BackButton handlePress={this.goBack}/>}
-        />
-        <View style={globals.flexCenter}>
-          <Text style={globals.h2}>
-            This is the Dashbaord
-          </Text>
-          <TouchableOpacity onPress={this.visitLanding}>
-            <Text>
-              Go to the Landing Page
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+    <TabBarIOS>
+
+        <TabBarItemIOS
+          title='Training Input'
+          iconName='ios-create-outline'
+          selected={this.state.selectedTab === 'TrainingInput'}
+          onPress={() => this.setState({ selectedTab: 'TrainingInput'})}
+                  >
+            <TrainingNav />
+        </TabBarItemIOS>
+
+        <TabBarItemIOS
+          title='Training Activity'
+          iconName='ios-pulse'
+          selected={this.state.selectedTab === "Training"}
+          onPress={() => this.setState({ selectedTab: 'Training'})}
+        >
+          <TrainingView />
+        </TabBarItemIOS>
+
+        <TabBarItemIOS
+          title='Profile'
+          iconName='ios-person'
+          selected={this.state.selectedTab === 'Profile'}
+          onPress={() => this.setState({ selectedTab: 'Profile'})}
+        >
+          <ProfileView
+            {...this.props}
+            navigator={navigator}
+            />
+        </TabBarItemIOS>
+
+     </TabBarIOS>
     )
   }
 }
-
 export default Dashboard;

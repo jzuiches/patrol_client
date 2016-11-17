@@ -68,29 +68,35 @@ export const groupsStyles = StyleSheet.create({
     fontWeight: '300',
   },
   boxContainer: {
-    alignItems: 'center',
+
+    alignItems: 'flex-start',
     flexWrap: 'wrap',
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
   },
   groupImage: {
     height: (deviceWidth / 2) - 25,
     width: (deviceWidth / 2) - 25,
-    opacity: 0.8,
     margin: 5,
+    borderRadius: 10,
+    shadowColor: "#000000",
+    shadowOffset: {
+      height: 0,
+      width: 2
+    }
   },
   groupBackground: {
-    opacity: 0.9,
     flex: 1,
     padding: 15,
     height: (deviceWidth / 2) - 25,
     width: (deviceWidth / 2) - 25,
   },
   groupText: {
-    color: 'white',
+    color: 'black',
     fontSize: 20,
-    position: 'absolute',
+
     fontWeight: '500',
+    textAlign: 'center',
   },
   groupTopImage: {
     width: deviceWidth,
@@ -441,7 +447,8 @@ export const formStyles = StyleSheet.create({
   container: {
     backgroundColor: Colors.inactive,
     flex: 1,
-    paddingVertical: 15
+    paddingTop: 15,
+    paddingBottom: 80
   },
   flexRow: {
     flexDirection: 'row',
@@ -533,7 +540,7 @@ export const formStyles = StyleSheet.create({
   },
   submitButton: {
     alignItems: 'center',
-    backgroundColor: Colors.brandPrimary,
+    backgroundColor: Colors.patrolBlue,
     height: 70,
     justifyContent: 'center',
   },
@@ -600,7 +607,8 @@ export const formStyles = StyleSheet.create({
 
 export const globals = StyleSheet.create({
   flex: {
-    flex: 1
+    flex: 1,
+
   },
   flexCenter: {
     flex: 1,
@@ -609,7 +617,8 @@ export const globals = StyleSheet.create({
   },
   flexContainer: {
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: 'white',
+
   },
   row: {
     flexDirection: 'row',
@@ -631,6 +640,9 @@ export const globals = StyleSheet.create({
   },
   pv1: {
     paddingVertical: 10
+  },
+  pb4: {
+    paddingBottom: 40
   },
   ph1: {
     paddingHorizontal: 10

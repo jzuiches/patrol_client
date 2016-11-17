@@ -22,14 +22,10 @@ class Landing extends Component{
     this.visitRegister = this.visitRegister.bind(this);
   }
   visitLogin(){
-    this.props.navigator.push({
-      name: 'Dashboard'
-    });
+    this.props.navigator.push({ name: 'Login' })
   }
   visitRegister(){
-    this.props.navigator.push({
-      name: 'Dashboard'
-    });
+    this.props.navigator.push({ name: 'Register' })
   }
   render(){
     let titleConfig = { title: 'SVSP', tintColor: 'white' };
