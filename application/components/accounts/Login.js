@@ -5,7 +5,8 @@ import {
   Text,
   ScrollView,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  AsyncStorage
 } from 'react-native';
 
 import NavigationBar from 'react-native-navbar';
@@ -90,6 +91,8 @@ loginStatus(response){
 }
 fetchUserInfo(response){
   console.log('fetching user', response);
+  AsyncStorage.setItem('authResponse', response.auth_token);
+  AsyncStorage.setItem('authId', response.user.id.toString());
   fetch(`${API}/users/${response.user.id}`, {
     headers: {
       'Content-Type': 'application/json',

@@ -17,14 +17,14 @@ const styles = groupsStyles;
 
 
 export const DivisionBoxes = ({visitDivisionForm}) => {
-  console.log("Division", Divisions);
+  console.log("Divisions", Divisions);
 
 return (
     <View style = {styles.boxContainer}>
-        {Divisions.map((division, idx) => {
+        {Divisions.map((division, id) => {
           return (
           <TouchableOpacity
-            key={idx}
+            key={id}
             style={globals.flexRow}
             onPress={() => visitDivisionForm(division)}
           >
@@ -34,7 +34,7 @@ return (
             >
               <View style={styles.groupBackground} >
                 <Text style={styles.groupText}>
-                  {division}
+                  {division.training_type}
                 </Text>
               </View>
             </Image>
@@ -51,12 +51,18 @@ class TrainingInputView extends Component{
   constructor(){
     super();
     this.visitDivisionForm = this.visitDivisionForm.bind(this);
+    this.state = {
+      division : ''
+    }
   }
-  visitDivisionForm(){
+  visitDivisionForm(division){
     this.props.navigator.push({
       name: 'TrainingForm',
-    })
+      division
+    });
   }
+
+
   render(){
     let titleConfig = { title: 'Training Divisions', tintColor: 'white' };
     return (
@@ -71,6 +77,7 @@ class TrainingInputView extends Component{
       <DivisionBoxes
       navigator={navigator}
       visitDivisionForm={this.visitDivisionForm}
+
       />
 
       </ScrollView>

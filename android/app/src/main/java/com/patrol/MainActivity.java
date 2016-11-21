@@ -1,6 +1,8 @@
 package com.patrol;
 
 import com.facebook.react.ReactActivity;
+import com.beefe.picker.PickerViewPackage;
+import com.imagepicker.ImagePickerPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 
 public class MainActivity extends ReactActivity {

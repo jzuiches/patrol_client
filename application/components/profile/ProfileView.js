@@ -16,8 +16,8 @@ const styles = profileStyles;
 class ProfileView extends Component{
 
   render() {
-    let titleConfig = { title: 'Profilec', tintColor: 'white' };
-    let { patroller } = this.props.user
+    let titleConfig = { title: 'Profile', tintColor: 'white' };
+    let patroller = this.props.user
     console.log("PROPS",this.props.user.name);
     return (
       <View style={[globals.flexContainer, globals.inactive]}>
@@ -38,7 +38,10 @@ class ProfileView extends Component{
             </Text>
             <Icon name='ios-arrow-forward' size={30} color='#ccc' />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.logoutButton}>
+          <TouchableOpacity
+            style={styles.logoutButton}
+            onPress={this.props.logout}
+            >
             <Text style={styles.logoutText}>
               Logout
             </Text>

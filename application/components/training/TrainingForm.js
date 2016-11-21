@@ -19,7 +19,18 @@ import Dropdown, { Select, Option, OptionList } from 'react-native-selectme';
 import BackButton from '../../shared/BackButton';
 import { formStyles, globals, selectStyles, optionTextStyles, overlayStyles } from '../../styles';
 import  Colors  from '../../styles/colors';
-import { TrainingCodes, TrainingTime, ListOfPatrollers } from '../../fixtures';
+import {
+  BeaconCodes,
+  LiftCodes,
+  RopeCodes,
+  FuniCodes,
+  Routes,
+  TobogganCodes,
+  DogCodes,
+  MiscCodes,
+  TrainingTime,
+  ListOfPatrollers
+} from '../../fixtures';
 const styles = formStyles;
 const {
   width: deviceWidth,
@@ -28,17 +39,25 @@ const {
 
 const PickerItemIOS = PickerIOS.Item;
 
+
+
 class TrainingForm extends Component{
   constructor(){
     super();
     this.toggleModal = this.toggleModal.bind(this);
     this.togglePatrollerModal = this.togglePatrollerModal.bind(this);
+    this.toggleRouteModal = this.toggleRouteModal.bind(this);
     this.goBack = this.goBack.bind(this);
+    this.trainingCodes = this.trainingCodes.bind(this);
+    this.trainingCodeSelection = this.trainingCodeSelection.bind(this);
+    this.renderLocation = this.renderLocation.bind(this);
     this.state = {
       showModal: false,
       showPatrollerModal: false,
+      showRouteModal:     false,
       training_division_id: '',
       location:             '',
+      route:                '',
       trainer:              '',
       comments:             '',
       training_time:        '',
@@ -47,9 +66,79 @@ class TrainingForm extends Component{
       timeZoneOffsetInHours: (-1) * (new Date()).getTimezoneOffset() / 60,
     }
   }
+
+  trainingCodes(){
+    switch(this.props.division.id){
+      case(1):
+      return(
+        BeaconCodes
+      );
+      case(2):
+      return(
+        LiftCodes
+      );
+      case(3):
+      return(
+        RopeCodes
+      );
+      case(5):
+      return(
+        FuniCodes
+      );
+      case(6):
+      return(
+        TobogganCodes
+      );
+      case(7):
+      return(
+        DogCodes
+      );
+      case(8):
+      return(
+        MiscCodes
+      );
+    }
+  }
+
   goBack(){
     this.props.navigator.pop();
   }
+
+  trainingCodeSelection(){
+    if (this.props.division.id != 4){
+      return(
+      <View>
+      <Text style={styles.h4}>
+        Select Training Code
+      </Text>
+      <Select
+        defaultValue="Add a code"
+        height={55}
+        onSelect={this.selectTechnology}
+        optionListRef={() => this.options}
+        style={selectStyles}
+        styleText={optionTextStyles}
+        width={deviceWidth}
+      >
+        {this.trainingCodes().map((code, idx) => (
+          <Option
+            styleText={optionTextStyles}
+            key={idx}
+          >
+            {code.name}
+          </Option>
+        ))}
+      </Select>
+      <OptionList
+         overlayStyles={overlayStyles}
+         ref={(el) => this.options = el }
+       />
+       </View>
+     )
+   }
+ };
+
+
 
   toggleModal(){
     this.setState({ showModal: ! this.state.toggleModal })
@@ -57,7 +146,9 @@ class TrainingForm extends Component{
   togglePatrollerModal(){
     this.setState({ showPatrollerModal: ! this.state.togglePatrollerModal })
   }
-
+  toggleRouteModal(){
+      this.setState({ showRouteModal: ! this.state.toggleRouteModal })
+  }
 onDateChange = (date) => {
   this.setState({date: date});
 };
@@ -70,12 +161,108 @@ onTimezoneChange = (event) => {
   this.setState({timeZoneOffsetInHours: offset});
 };
 
+renderLocation(){
+  if (this.props.division.id === 4){
+    return(
+      <View>
+  <Text style={styles.h4}>* Training Route</Text>
+  <View style={styles.formField}>
+   <TouchableOpacity
+     style={styles.flexRow}
+     onPress={this.toggleRouteModal}
+   >
+     <Text style={styles.input}>
+     Choose Route
+     </Text>
+     <Icon
+       name="ios-arrow-forward"
+       color='#777'
+       size={30}
+       style={globals.mr1}
+     />
+   </TouchableOpacity>
+ </View>
+
+<Modal
+animationType='slide'
+transparent={true}
+visible={this.state.showRouteModal}
+onRequestClose={this.saveStart}
+>
+<View style={styles.modal}>
+<View style={styles.datepicker}>
+<PickerIOS
+ optionListRef={() => this.routeOptions}
+ style={selectStyles}
+ styleText={optionTextStyles}
+ width={deviceWidth}
+>
+ {Routes.map((route, id) => (
+   <PickerItemIOS
+     styleText={optionTextStyles}
+     key={id}
+     value={this.state.route}
+     label={route.name}
+   />
+ ))}
+</PickerIOS>
+<View style={styles.btnGroup}>
+    <TouchableOpacity
+      style={styles.pickerButton}
+      onPress={() => this.setState({ showRouteModal: false })}
+    >
+      <Text style={styles.btnText}>
+        Cancel
+      </Text>
+    </TouchableOpacity>
+    <TouchableOpacity
+      style={[styles.pickerButton, globals.brandPrimary]}
+      onPress={this.saveStart}
+    >
+      <Text style={[styles.btnText, { color: 'red' }]}>
+        Save
+      </Text>
+    </TouchableOpacity>
+  </View>
+  </View>
+  </View>
+  </Modal>
+
+ </View>
+
+  )
+  }else{
+  return(
+    <View>
+  <Text style={styles.h4}>* Training Location</Text>
+  <View style={styles.formField}>
+   <TextInput
+     autoCapitalize="none"
+     maxLength={20}
+     onChangeText={(password) => this.setState({ password })}
+     onSubmitEditing={() => this.firstName.focus()}
+     placeholder="ex. Red Dog"
+     placeholderTextColor={Colors.copyMedium}
+     ref={(el) => this.password = el }
+     returnKeyType="next"
+
+     style={styles.input}
+   />
+  </View>
+  </View>
+  )}
+
+}
+
 
 
   render(){
-    console.log("TRainginCODES", TrainingCodes);
+
+    console.log("division?", this.props.division)
 
     let titleConfig = { title: 'Training Input Form', tintColor: 'white' };
+
+
     return (
     <View style={[globals.flexContainer, globals.inactive]}>
     <NavigationBar
@@ -90,7 +277,7 @@ onTimezoneChange = (event) => {
       >
 
     <Text style={[globals.h4, globals.pa2]}>
-          Enter Your Training
+          Enter Your Training for {this.props.division.training_type}
           </Text>
           <Text style={styles.h4}>* Training Date</Text>
           <DatePickerIOS
@@ -100,21 +287,8 @@ onTimezoneChange = (event) => {
             onDateChange={this.onDateChange}
           />
 
-          <Text style={styles.h4}>* Training Location</Text>
-         <View style={styles.formField}>
-           <TextInput
-             autoCapitalize="none"
-             maxLength={20}
-             onChangeText={(password) => this.setState({ password })}
-             onSubmitEditing={() => this.firstName.focus()}
-             placeholder="ex. Red Dog"
-             placeholderTextColor={Colors.copyMedium}
-             ref={(el) => this.password = el }
-             returnKeyType="next"
+          {this.renderLocation()}
 
-             style={styles.input}
-           />
-         </View>
          <Text style={styles.h4}>* Trainer</Text>
          <View style={styles.formField}>
           <TouchableOpacity
@@ -150,7 +324,7 @@ onTimezoneChange = (event) => {
             <PickerItemIOS
               styleText={optionTextStyles}
               key={patroller.id}
-              value={patroller.name}
+              value={this.state.trainer}
               label={patroller.name}
             />
           ))}
@@ -248,33 +422,9 @@ onTimezoneChange = (event) => {
 
 
 
+{this.trainingCodeSelection()}
 
 
-             <Text style={styles.h4}>
-               Select Training Code
-             </Text>
-             <Select
-               defaultValue="Add a code"
-               height={55}
-               onSelect={this.selectTechnology}
-               optionListRef={() => this.options}
-               style={selectStyles}
-               styleText={optionTextStyles}
-               width={deviceWidth}
-             >
-               {TrainingCodes.map((code, idx) => (
-                 <Option
-                   styleText={optionTextStyles}
-                   key={idx}
-                 >
-                   {code.name}
-                 </Option>
-               ))}
-             </Select>
-             <OptionList
-                overlayStyles={overlayStyles}
-                ref={(el) => this.options = el }
-              />
 
 
               <TouchableOpacity

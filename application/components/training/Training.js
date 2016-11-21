@@ -42,7 +42,7 @@ class Training extends Component{
         <ScrollView style={globals.flex}>
           <Image source={require('../../assets/images/skier.png')} style={styles.groupTopImage}>
             <View style={styles.overlayBlur}>
-              <Text style={styles.h1}>{Divisions[this.props.training.training_division_id-1]}</Text>
+              <Text style={styles.h1}>{Divisions[this.props.training.training_division_id-1].training_type}</Text>
             </View>
             <View style={styles.bottomPanel}>
               <Text style={[globals.h4, globals.primaryText]}>

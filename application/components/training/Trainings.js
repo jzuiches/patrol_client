@@ -26,6 +26,7 @@ class TrainingView extends Component{
     this.visitTraining = this.visitTraining.bind(this);
     this.visitTrainingEdit = this.visitTrainingEdit.bind(this);
     this.getSwipeoutBtns = this.getSwipeoutBtns.bind(this);
+    this.trainingsRender = this.trainingsRender.bind(this);
   }
 
 
@@ -46,7 +47,7 @@ class TrainingView extends Component{
           <View style={globals.flex}>
             <View style={globals.textContainer}>
             <Text style={styles.h3}>
-              {Divisions[training.training_division_id-1]}
+              {Divisions[training.training_division_id-1].training_type}
             </Text>
             </View>
             <View style={globals.textContainer}>
@@ -105,31 +106,51 @@ class TrainingView extends Component{
   }
 
   dataSource(){
+    console.log(this.props.user.trainings.length===0);
     return(
       new ListView.DataSource({
         rowHasChanged: rowHasChanged
       })
-      .cloneWithRows(User.trainings)
+      .cloneWithRows(this.props.user.trainings)
     );
   }
 
-  render(){
-    let titleConfig = { title: 'Trainings', tintColor: 'white' };
-    return (
-      <View style={globals.flexContainer}>
+  trainingsRender(){
 
-        <NavigationBar
-          title={titleConfig}
-          tintColor={Colors.patrolBlue}
-        />
-        <ListView
-        dataSource={this.dataSource()}
-        contentInset={{ bottom: 49 }}
-        renderRow={this._renderRow}
-        />
-      </View>
-    )
+    {if (this.props.user.trainings.length === 0){
+    return (
+      <View>
+        <Text style={[styles.h4, globals.pa1]}>You Have No Logged Trainings</Text>
+        </View>
+
+    )}else{
+  return (
+
+
+
+      <ListView
+      dataSource={this.dataSource()}
+      contentInset={{ bottom: 49 }}
+      renderRow={this._renderRow}
+      enableEmptySections={true}
+      />
+
+  )}
   }
 }
 
+  render(){
+    let titleConfig = { title: 'Trainings', tintColor: 'white' };
+
+    return(
+      <View style={globals.flexContainer}>
+      <NavigationBar
+        title={titleConfig}
+        tintColor={Colors.patrolBlue}
+      />
+      {this.trainingsRender()}
+      </View>
+    )
+ }
+}
 export default TrainingView;
