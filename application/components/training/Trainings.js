@@ -12,29 +12,71 @@ import NavigationBar from 'react-native-navbar';
 import Colors from '../../styles/colors';
 import moment from 'moment';
 import Swipeout from 'react-native-swipeout';
+import { API } from '../../config';
 import { Divisions, patroller, trainings, User } from '../../fixtures';
 import { rowHasChanged } from '../../utilities';
 import { globals, messagesStyles } from '../../styles';
 const styles = messagesStyles;
+export const SelectBox = () => {
+return (
+    <View style = {styles.boxSelect}>
+    <TouchableOpacity
+      style={globals.flexRow}
+      onPress={() => togglePageLayout()}
+    >
+    <Text>list by date</Text>
+    </TouchableOpacity>
+    <TouchableOpacity
+      style={globals.flexRow}
+      onPress={() => togglePageLayout()}
+    >
+    <Text>list by division</Text>
+    </TouchableOpacity>
+    </View>
+  )
+}
 
-
-class TrainingView extends Component{
+class Trainings extends Component{
   constructor(){
     super();
+    this.deleteTraining = this.deleteTraining.bind(this);
     this._renderRow = this._renderRow.bind(this);
     this.dataSource = this.dataSource.bind(this);
     this.visitTraining = this.visitTraining.bind(this);
     this.visitTrainingEdit = this.visitTrainingEdit.bind(this);
     this.getSwipeoutBtns = this.getSwipeoutBtns.bind(this);
     this.trainingsRender = this.trainingsRender.bind(this);
+    this.state = {
+      swipeState: false,
+      listByDate: false
+    };
   }
 
+divisionFinder(division){
+    return division.id === training.training_division_id
+  }
 
+convertTrainingArrayToMap(){
+  let trainingDivisionMap = {};
+  console.log("convert", Divisions[1].training_type);
+  this.props.trainings.forEach(function(training){
+    if ( !trainingDivisionMap[Divisions[training.training_division_id-1].training_type]){
 
+      trainingDivisionMap[Divisions[training.training_division_id-1].training_type] =  [];
+    }
+    trainingDivisionMap[Divisions[training.training_division_id-1].training_type].push(training);
+  });
+  return trainingDivisionMap;
+}
+
+renderSectionHeader(sectionData, division){
+  return(
+    <Text style={styles.sectionHeader}>{division}</Text>
+  )
+}
   _renderRow(training){
-    console.log(training.location);
     return (
-        <Swipeout backgroundColor='white' right={this.getSwipeoutBtns(training)}>
+        <Swipeout backgroundColor='white' right={this.getSwipeoutBtns(training)} close={this.state.swipeState}>
       <TouchableOpacity
       style={globals.flexContainer}
       onPress={() => this.visitTraining(training)}
@@ -42,11 +84,11 @@ class TrainingView extends Component{
         <View style={globals.flexRow}>
           <Image
             style={globals.avatar}
-            source={require('../../assets/images/skier.png')}
+            source={Divisions[training.training_division_id-1].image}
           />
           <View style={globals.flex}>
             <View style={globals.textContainer}>
-            <Text style={styles.h3}>
+            <Text style={styles.h3b}>
               {Divisions[training.training_division_id-1].training_type}
             </Text>
             </View>
@@ -55,11 +97,18 @@ class TrainingView extends Component{
                 {training.location}
               </Text>
               <Text style={styles.h6}>
-                {moment(training.training_date).fromNow()}
+                {moment(training.training_date).calendar(null, {
+    sameDay: '[Today]',
+    nextDay: '[Tomorrow]',
+    nextWeek: 'dddd',
+    lastDay: '[Yesterday]',
+    lastWeek: '[Last] dddd',
+    sameElse: 'MM/DD/YYYY'
+})}
               </Text>
             </View>
             <Text style={[styles.h4, globals.mh1]}>
-              {training.comments.substring(0, 40)}...
+              {training.comments.substring(0, 40)}
             </Text>
           </View>
           <View style={styles.arrowContainer}>
@@ -86,10 +135,27 @@ class TrainingView extends Component{
   {
     text: 'Delete',
     backgroundColor: 'red',
-    onPress: () => {this.props.deleteTraining()}
+    onPress: () => {this.deleteTraining(training.id)}
   }
   ]
 }
+
+deleteTraining(id){
+  this.setState({swipeState: true})
+  this.props.deleteFromTrainings(id);
+  fetch(`${API}/trainings/${id}`,{
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(response => response.json())
+  .catch(err =>{})
+  .done();
+}
+
+
+
 
   visitTrainingEdit(training){
     this.props.navigator.push({
@@ -105,19 +171,19 @@ class TrainingView extends Component{
     })
   }
 
-  dataSource(){
-    console.log(this.props.user.trainings.length===0);
+  dataSource(trainingData){
     return(
       new ListView.DataSource({
-        rowHasChanged: rowHasChanged
+        rowHasChanged: rowHasChanged,
+        sectionHeaderHasChanged: (s1, s2) => s1 !== s2
       })
-      .cloneWithRows(this.props.user.trainings)
+      .cloneWithRowsAndSections(trainingData)
     );
   }
 
   trainingsRender(){
-
-    {if (this.props.user.trainings.length === 0){
+    console.log("PP", this.props);
+    {if (! this.props.trainings.length) {
     return (
       <View>
         <Text style={[styles.h4, globals.pa1]}>You Have No Logged Trainings</Text>
@@ -129,9 +195,10 @@ class TrainingView extends Component{
 
 
       <ListView
-      dataSource={this.dataSource()}
-      contentInset={{ bottom: 49 }}
+      dataSource={this.dataSource(this.convertTrainingArrayToMap())}
+      contentInset={{ bottom: 49, top: -20 }}
       renderRow={this._renderRow}
+      renderSectionHeader={this.renderSectionHeader}
       enableEmptySections={true}
       />
 
@@ -142,15 +209,18 @@ class TrainingView extends Component{
   render(){
     let titleConfig = { title: 'Trainings', tintColor: 'white' };
 
+
     return(
       <View style={globals.flexContainer}>
       <NavigationBar
         title={titleConfig}
-        tintColor={Colors.patrolBlue}
+        tintColor='red'
       />
+      <SelectBox/>
+
       {this.trainingsRender()}
       </View>
     )
  }
 }
-export default TrainingView;
+export default Trainings;

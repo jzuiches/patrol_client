@@ -24,14 +24,15 @@ class Training extends Component{
     this.props.navigator.pop();
   }
   render(){
+    console.log("user for training", this.props)
     let titleConfig = {
-      title: `${User.name}`,
+      title: `${this.props.user.name}`,
       tintColor: 'white'
     };
     return (
       <View style={globals.flexContainer}>
         <NavigationBar
-          tintColor={Colors.patrolBlue}
+          tintColor='red'
           title={titleConfig}
           leftButton={<BackButton handlePress={this.goBack}/>}
         />
@@ -40,7 +41,7 @@ class Training extends Component{
 
 
         <ScrollView style={globals.flex}>
-          <Image source={require('../../assets/images/skier.png')} style={styles.groupTopImage}>
+          <Image source={Divisions[this.props.training.training_division_id-1].image} style={styles.groupTopImage}>
             <View style={styles.overlayBlur}>
               <Text style={styles.h1}>{Divisions[this.props.training.training_division_id-1].training_type}</Text>
             </View>
@@ -62,7 +63,7 @@ class Training extends Component{
 
           <View style={globals.lightDivider} />
           <Text style={styles.h2}>Training Time</Text>
-          <Text style={[globals.h5, globals.ph2]}>{this.props.training.training_time} {this.props.training.training_time === 1 ? 'hr' : 'hrs'}</Text>
+          <Text style={[globals.h5, globals.ph2]}>{this.props.training.t_time}</Text>
 
           <View style={globals.lightDivider} />
           <Text style={styles.h2}>Training Codes</Text>

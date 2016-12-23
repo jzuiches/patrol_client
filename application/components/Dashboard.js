@@ -28,11 +28,11 @@ class Dashboard extends Component{
     .then(data => this.props.logout())
     .catch(err =>{})
     .done();
-
   }
 
+
   render(){
-     console.log("P", this.props);
+     console.log("P", this.props.trainings);
     return (
     <TabBarIOS>
 
@@ -42,7 +42,8 @@ class Dashboard extends Component{
           selected={this.state.selectedTab === 'TrainingInput'}
           onPress={() => this.setState({ selectedTab: 'TrainingInput'})}
                   >
-            <TrainingNav />
+            <TrainingNav
+            {...this.props} />
         </TabBarItemIOS>
 
         <TabBarItemIOS

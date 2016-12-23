@@ -1,242 +1,187 @@
-import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Dimensions,
-  DatePickerIOS,
-  Modal,
-  TextInput
-} from 'react-native';
-import moment from 'moment';
-import NavigationBar from 'react-native-navbar';
 import Icon from 'react-native-vector-icons/Ionicons';
-import Dropdown, { Select, Option, OptionList } from 'react-native-selectme';
+import NavigationBar from 'react-native-navbar';
+import React, { Component } from 'react';
+import moment from 'moment';
+import { View, ListView, ScrollView, TouchableOpacity, Text, Image, ActionSheetIOS } from 'react-native';
+import { find, findIndex, isEqual } from 'underscore';
+
 import BackButton from '../../shared/BackButton';
-import { formStyles, globals, selectStyles, optionTextStyles, overlayStyles } from '../../styles';
-import  Colors  from '../../styles/colors';
-import { TrainingCodes, TrainingTime } from '../../fixtures';
-const styles = formStyles;
-const {
-  width: deviceWidth,
-  height: deviceHeight
-} = Dimensions.get('window');
+import { User } from '../../fixtures';
+import { Divisions } from '../../fixtures';
+import { globals, groupsStyles, formStyles } from '../../styles';
+
+const styles = groupsStyles;
+
 
 
 class TrainingEdit extends Component{
   constructor(){
     super();
-    this.toggleModal = this.toggleModal.bind(this);
     this.goBack = this.goBack.bind(this);
-    this.onDateChange = this.onDateChange.bind(this);
-    this.state =  {
-      showModal: false,
-      date: new Date(),
-      timeZoneOffsetInHours: (-1) * (new Date()).getTimezoneOffset() / 60,
-
-      }
   }
   goBack(){
     this.props.navigator.pop();
   }
-
-
-  toggleModal(){
-    this.setState({ showModal: ! this.state.toggleModal })
-  }
-
-  onDateChange = (date) => {
-    this.setState({date: date});
-  };
-
-  onTimezoneChange = (event) => {
-    var offset = parseInt(event.nativeEvent.text, 10);
-    if (isNaN(offset)) {
-      return;
-    }
-    this.setState({timeZoneOffsetInHours: offset});
-  };
-
-render(){
-  console.log("DATE",this.state.date);
-  let tdate = new Date(this.props.training.training_date)
-  console.log("Props",new Date(tdate.getTime() + tdate.getTimezoneOffset()*60000));
-  let titleConfig = { title: 'Training Edit Form', tintColor: 'white' };
-  let trainingDate = new Date(tdate.getTime() + tdate.getTimezoneOffset()*60000);
+  render(){
+    console.log("user for training", this.props)
+    let titleConfig = {
+      title: `${this.props.user.name}`,
+      tintColor: 'white'
+    };
     return (
       <View style={globals.flexContainer}>
-    <NavigationBar
-      title={titleConfig}
-      tintColor={Colors.patrolBlue}
-      leftButton={<BackButton handlePress={this.goBack}/>}
-    />
-    <ScrollView style={styles.container}>
-
-    <Text style={[globals.h4, globals.pa2]}>
-          Edit Your Training
-          </Text>
-          <Text style={styles.h4}>* Training Date</Text>
-          <View style={styles.formField}>
-           <TouchableOpacity
-             style={styles.flexRow}
-             onPress={this.toggleModal}
-           >
-             <Text style={styles.input}>
-               {moment(this.props.training.training_date).format('dddd MMM Do YYYY')}
-             </Text>
-             <Icon
-               name="ios-arrow-forward"
-               color='#777'
-               size={30}
-               style={globals.mr1}
-             />
-           </TouchableOpacity>
-         </View>
-          <Modal
-        animationType='slide'
-        transparent={true}
-        visible={this.state.showModal}
-        onRequestClose={this.saveStart}
-        >
-        <View style={styles.modal}>
-           <View style={styles.datepicker}>
-          <DatePickerIOS
-            date={trainingDate}
-            mode="date"
-            timeZoneOffsetInMinutes={this.state.timeZoneOffsetInHours * 60}
-            onDateChange={this.onDateChange}
-          />
-          <View style={styles.btnGroup}>
-               <TouchableOpacity
-                 style={styles.pickerButton}
-                 onPress={() => this.setState({ showModal: false })}
-               >
-                 <Text style={styles.btnText}>
-                   Cancel
-                 </Text>
-               </TouchableOpacity>
-               <TouchableOpacity
-                 style={[styles.pickerButton, globals.brandPrimary]}
-                 onPress={this.saveStart}
-               >
-                 <Text style={[styles.btnText, { color: 'red' }]}>
-                   Save
-                 </Text>
-               </TouchableOpacity>
-             </View>
-           </View>
-         </View>
-        </Modal>
-        <Text style={styles.h4}>* Training Location</Text>
-       <View style={styles.formField}>
-         <TextInput
-           autoCapitalize="none"
-           maxLength={20}
-           onChangeText={(password) => this.setState({ password })}
-           onSubmitEditing={() => this.firstName.focus()}
-           value={this.props.training.location}
-           valueTextColor={Colors.copyMedium}
-           ref={(el) => this.password = el }
-           returnKeyType="next"
-
-           style={styles.input}
-         />
-       </View>
-       <Text style={styles.h4}>* Trainer</Text>
-       <View style={styles.formField}>
-         <TextInput
-           maxLength={20}
-           onChangeText={(firstName) => this.setState({ firstName })}
-           onSubmitEditing={() => this.lastName.focus()}
-           value={this.props.training.trainer}
-           valueTextColor='#bbb'
-           ref={(el) => this.firstName = el }
-           returnKeyType="next"
-           style={styles.input}
-         />
-       </View>
-       <Text style={styles.h4}>
-         Select Training Time
-       </Text>
-       <Select
-         value={this.props.training.training_time}
-         height={55}
-         onSelect={this.selectTime}
-         optionListRef={() => this.timeOptions}
-         style={selectStyles}
-         styleText={optionTextStyles}
-         width={deviceWidth}
-       >
-         {TrainingTime.map((time, idx) => (
-           <Option
-             styleText={optionTextStyles}
-             key={idx}
-           >
-             {time.name}
-           </Option>
-         ))}
-       </Select>
-       <OptionList
-
-          ref={(el) => this.timeOptions = el }
+        <NavigationBar
+          tintColor='red'
+          title={titleConfig}
+          leftButton={<BackButton handlePress={this.goBack}/>}
         />
 
 
 
-         <Text style={styles.h4}>  Comments</Text>
-         <View style={styles.formField}>
-           <TextInput
-             maxLength={100}
-             onChangeText={(lastName) => this.setState({ lastName })}
-             value={this.props.training.comments}
-             valueTextColor='#bbb'
-             multiline={true}
-             ref={(el) => this.lastName = el }
-             returnKeyType="next"
-             style={styles.input}
-           />
+
+        <ScrollView
+        style={globals.flex}
+
+        >
+          <Image source={Divisions[this.props.training.training_division_id-1].image} style={styles.groupTopImage}>
+            <View style={styles.overlayBlur}>
+              <Text style={styles.h1}>{Divisions[this.props.training.training_division_id-1].training_type}</Text>
+            </View>
+            <View style={styles.bottomPanel}>
+            <TouchableOpacity>
+              <Text style={[globals.h4, globals.primaryText]}>
+                {moment(this.props.training.training_date).subtract(1, 'days').format('MMMM Do YYYY')}
+                <Icon
+                     name="ios-create-outline"
+                     color='#777'
+                     size={30}
+                     style={globals.pa2}
+                   />
+
+              </Text>
+
+              </TouchableOpacity>
+            </View>
+          </Image>
+          <View style={formStyles.formField}>
+             <TouchableOpacity
+               style={formStyles.flexRow}
+
+             >
+
+
+             <Text style={styles.h2}>Trainer</Text>
+             <Text style={[globals.h5, globals.ph2]}>{this.props.training.trainer}</Text>
+
+
+
+              <Icon
+                 name="ios-create-outline"
+                 color='#777'
+                 size={30}
+                 style={globals.mr1}
+               />
+
+             </TouchableOpacity>
            </View>
 
-           <Text style={styles.h4}>
-             Select Training Code
-           </Text>
-           <Select
-             defaultValue="Add a code"
-             height={55}
-             onSelect={this.selectTechnology}
-             optionListRef={() => this.options}
-             style={selectStyles}
-             styleText={optionTextStyles}
-             width={deviceWidth}
-           >
-             {TrainingCodes.map((code, idx) => (
-               <Option
-                 styleText={optionTextStyles}
-                 key={idx}
-               >
-                 {code.name}
-               </Option>
-             ))}
-           </Select>
-           <OptionList
-              overlayStyles={overlayStyles}
-              ref={(el) => this.options = el }
-            />
+          <View style={globals.lightDivider} />
+
+          <View style={formStyles.formField}>
+             <TouchableOpacity
+               style={formStyles.flexRow}
+
+             >
 
 
+
+            <Text style={styles.h2}>Location</Text>
+            <Text style={[globals.h5, globals.ph2]}>{this.props.training.location}</Text>
+
+
+
+               <Icon
+                 label='edit'
+                 name="ios-create-outline"
+                 color='#777'
+                 size={30}
+                 style={globals.mr1}
+               />
+             </TouchableOpacity>
+           </View>
+         <View style={globals.lightDivider}/>
+         <View style={formStyles.formField}>
             <TouchableOpacity
-          style={[styles.submitButton,{backgroundColor: Colors.patrolBlue}]}
+              style={formStyles.flexRow}
+            >
+            <Text style={styles.h2}>Comments</Text>
+            <Text style={[globals.h5, globals.ph2]}>{this.props.training.comments}</Text>
+
+             <Icon
+                name="ios-create-outline"
+                color='#777'
+                size={30}
+                style={globals.mr1}
+              />
+
+            </TouchableOpacity>
+          </View>
+
+         <View style={globals.lightDivider} />
+         <View style={formStyles.formField}>
+            <TouchableOpacity
+              style={formStyles.flexRow}
+            >
+
+            <Text style={styles.h2}>Training Time</Text>
+            <Text style={[globals.h5, globals.ph2]}>{this.props.training.t_time}</Text>
+             <Icon
+                name="ios-create-outline"
+                color='#777'
+                size={30}
+                style={globals.mr1}
+              />
+
+            </TouchableOpacity>
+          </View>
+
+          <View style={globals.lightDivider} />
+
+          <View style={formStyles.formField}>
+             <TouchableOpacity
+               style={formStyles.flexRow}
+             >
+             <Text style={styles.h2}>Training Codes</Text>
+             <View>
+               {this.props.training.training_codes.map((code, id) => {
+                 return (
+                   <Text style={[ globals.ph2]} key={id}>{code.training_name}</Text>
+                 );
+               })}
+             </View>
+              <Icon
+                 name="ios-create-outline"
+                 color='#777'
+                 size={30}
+                 style={globals.mr1}
+               />
+
+             </TouchableOpacity>
+           </View>
+          <View style={globals.lightDivider} />
+          <TouchableOpacity
+          style={[formStyles.submitButton,{backgroundColor: Colors.patrolBlue}]}
           onPress={this.handleSubmit}
           >
-          <Text style={globals.largeButtonText}>Save</Text>
+          <Text style={globals.largeButtonText}>Submit</Text>
           </TouchableOpacity>
 
 
-    </ScrollView>
-    </View>
-  )
+
+        </ScrollView>
+      </View>
+    )
   }
-}
+};
 
 export default TrainingEdit;

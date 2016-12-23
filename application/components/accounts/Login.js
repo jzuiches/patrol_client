@@ -110,7 +110,7 @@ updateUserInfo(user){
   this.props.navigator.push({ name: 'Dashboard' })
 }
 connectionError(){
-  this.setState({ errorMsg: 'Connection error.'})
+  this.setState({ errorMsg: 'Connection error joe.'})
 }
   changeEmail(email){
     this.setState({ email })
@@ -141,11 +141,11 @@ connectionError(){
                 onSubmitEditing={() => this.password.focus()}
                 onChangeText={this.changeEmail}
                 keyboardType="email-address"
-                autoCapitalize="none"
                 maxLength={140}
                 placeholderTextColor={Colors.copyMedium}
                 style={styles.input}
                 placeholder="Your email address"
+                autoCapitalize="none"
               />
             </View>
             <Text style={styles.h4}>Password</Text>

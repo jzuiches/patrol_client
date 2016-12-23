@@ -11,9 +11,9 @@ class TrainingView extends Component{
   constructor(){
     super();
     this.state = {
-      trainings : [],
+
       ready         : false,
-      users         : [],
+
     };
   }
   render(){

@@ -29,10 +29,13 @@ const Loading = () => (
 export default class patrol extends Component {
   constructor(){
    super();
+   this.deleteFromTrainings = this.deleteFromTrainings.bind(this);
+
    this.updateUser = this.updateUser.bind(this);
    this.logout = this.logout.bind(this);
    this.state = {
      user: null,
+     trainings: [],
      ready: false,
      initialRoute :'Landing',
    };
@@ -70,23 +73,45 @@ fetchUser(authResponse, authId){
              }
            })
              .then(response => response.json())
+
              .then(user => this.setState({
+
+               trainings: user.trainings,
                ready: true,
                initialRoute: 'Dashboard',
-               user
+               user: user
+
              }))
              .catch(err => this.ready(err))
              .done();
 }
 
  updateUser(user){
-   this.setState({ user: user });
+   this.setState({ user: user,
+   trainings: user.trainings });
  }
 
  logout(){
    this.nav.push( { name: 'Landing' });
    this.updateUser(null);
+   this.setState({ trainings: []});
  }
+
+ deleteFromTrainings(id){
+   console.log("TR", this.state.trainings);
+   let { trainings } = this.state
+   console.log("DECONS", trainings)
+   filtered = [];
+   let filtered = trainings.filter(function(training){
+
+     return training.id !== id;
+
+   })
+
+   this.setState({ trainings : filtered});
+   console.log("DELETED STATE", this.state.trainings)
+ }
+
 
   render() {
     if ( ! this.state.ready ) { return <Loading /> }
@@ -119,7 +144,10 @@ fetchUser(authResponse, authId){
             updateUser={this.updateUser}
             navigator={navigator}
             user={this.state.user}
-            logout={this.logout}/>
+            trainings={this.state.trainings}
+            logout={this.logout}
+            deleteFromTrainings={this.deleteFromTrainings}
+          />
           )
          }
        }}

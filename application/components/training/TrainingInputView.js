@@ -19,6 +19,7 @@ const styles = groupsStyles;
 export const DivisionBoxes = ({visitDivisionForm}) => {
   console.log("Divisions", Divisions);
 
+
 return (
     <View style = {styles.boxContainer}>
         {Divisions.map((division, id) => {
@@ -29,7 +30,7 @@ return (
             onPress={() => visitDivisionForm(division)}
           >
             <Image
-              source={require('../../assets/images/skier.png')}
+              source={division.image}
               style={[styles.groupImage, {backgroundColor: 'transparent',}] }
             >
               <View style={styles.groupBackground} >
@@ -64,14 +65,18 @@ class TrainingInputView extends Component{
 
 
   render(){
+      console.log("div props", this.props);
     let titleConfig = { title: 'Training Divisions', tintColor: 'white' };
     return (
     <View style={globals.flexContainer}>
     <NavigationBar
       title={ titleConfig }
-      tintColor={Colors.patrolBlue}
+      tintColor='red'
     />
-    <ScrollView style={[globals.flex, globals.mt1, globals.pb4]}>
+    <ScrollView
+    style={[globals.flex, globals.mt1, globals.pb4]}
+    contentInset={{bottom: 49}}
+    >
      <Text style={[globals.h4, globals.mh2]}>Select a Training Division</Text>
 
       <DivisionBoxes

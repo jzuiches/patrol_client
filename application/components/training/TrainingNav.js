@@ -10,7 +10,7 @@ class TrainingNav extends Component{
     super();
     this.state = {
       division: '',
-      trainings :[],
+  
       ready : false,
     }
   }

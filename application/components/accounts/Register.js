@@ -13,6 +13,7 @@ import {
 
 
 import NavigationBar from 'react-native-navbar';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Icon from 'react-native-vector-icons/Ionicons';
 import BackButton from '../../shared/BackButton';
 import Colors from '../../styles/colors';
@@ -75,7 +76,8 @@ class Register extends Component{
     .done();
 }
     fetchUserInfo(response){
-      AsyncStorage.setItem('authResponse', response);
+      AsyncStorage.setItem('authResponse', response.auth_token);
+      AsyncStorage.setItem('authId', response.user.id.toString());
     fetch(`${API}/users/${response.user.id}`, {
       headers: {
         'Content-Type': 'application/json',
@@ -111,7 +113,10 @@ class Register extends Component{
           tintColor='red'
           leftButton={<BackButton handlePress={this.goBack}/>}
         />
-        <ScrollView style = {globals.inactive}>
+        <KeyboardAwareScrollView
+            style={[styles.formContainer, globals.pv1]}
+            contentInset={{bottom: 49}}
+          >
         <Text style={styles.h4}>*Name</Text>
         <View style={styles.formField}>
           <TextInput
@@ -175,7 +180,7 @@ class Register extends Component{
              {this.state.errorMsg}
            </Text>
          </View>
-         </ScrollView>
+         </KeyboardAwareScrollView>
          <TouchableOpacity
         style={styles.submitButton}
         onPress={this.handleSubmit}

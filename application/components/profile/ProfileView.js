@@ -23,7 +23,7 @@ class ProfileView extends Component{
       <View style={[globals.flexContainer, globals.inactive]}>
         <NavigationBar
           title={titleConfig}
-          tintColor={Colors.patrolBlue}
+          tintColor='red'
           />
           <ScrollView style={globals.flex}>
           <View style={globals.flexCenter}>

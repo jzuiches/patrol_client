@@ -1,6 +1,7 @@
 import Colors from './colors';
 import { Dimensions, StyleSheet } from 'react-native';
 
+
 const { height: deviceHeight, width: deviceWidth } = Dimensions.get('window');
 
 export const profileStyles = StyleSheet.create({
@@ -75,8 +76,8 @@ export const groupsStyles = StyleSheet.create({
     justifyContent: 'space-around',
   },
   groupImage: {
-    height: (deviceWidth / 2) - 25,
-    width: (deviceWidth / 2) - 25,
+    height: (deviceWidth / 2)-15,
+    width: (deviceWidth / 2)-15,
     margin: 5,
     borderRadius: 10,
     shadowColor: "#000000",
@@ -152,8 +153,18 @@ export const groupsStyles = StyleSheet.create({
 
 export const messagesStyles = StyleSheet.create({
   h5: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '700'
+  },
+  h3b: {
+    fontSize: 15,
+    fontWeight: '500'
+  },
+  sectionHeader: {
+    fontSize: 20,
+    fontWeight: '400',
+    paddingLeft: 10,
+    backgroundColor: Colors.inactive
   },
   h6: {
     color: Colors.bodyTextGray,
@@ -164,7 +175,7 @@ export const messagesStyles = StyleSheet.create({
     marginLeft: 10,
   },
   h4: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#9B9B9B',
     fontStyle: 'italic',
     fontWeight: '300',
@@ -251,6 +262,13 @@ export const messagesStyles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     marginTop: 8
+  },
+  boxSelect: {
+
+    alignItems: 'flex-start',
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
   }
 });
 
@@ -450,6 +468,14 @@ export const formStyles = StyleSheet.create({
     paddingTop: 15,
     paddingBottom: 80
   },
+  codeContainer: {
+    backgroundColor: Colors.inactive,
+    flex: 1,
+    paddingLeft: 10,
+    paddingTop: 10,
+    paddingBottom: 10
+
+  },
   flexRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -548,6 +574,7 @@ export const formStyles = StyleSheet.create({
     marginBottom: 50
   },
   textContainer: {
+    paddingBottom: 10,
     paddingHorizontal: 10,
     paddingTop: 10,
     flexDirection: 'row',
